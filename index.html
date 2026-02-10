@@ -2,44 +2,44 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mini Social</title>
-
+<title>Mini Telegram</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<h1>Mini Social</h1>
+<h1>Mini Telegram</h1>
 
 <!-- Авторизація -->
 <div id="authBox">
 
-<h3>Реєстрація</h3>
 <input id="regEmail" placeholder="Email">
 <input id="regPass" type="password" placeholder="Пароль">
 <button onclick="register()">Реєстрація</button>
 
-<h3>Вхід</h3>
+<br><br>
+
 <input id="loginEmail" placeholder="Email">
 <input id="loginPass" type="password" placeholder="Пароль">
-<button onclick="login()">Увійти</button>
+<button onclick="login()">Вхід</button>
 
 </div>
 
+<!-- Основний чат -->
+<div id="chatApp" style="display:none">
 
-<!-- Основна соцмережа -->
-<div id="mainBox" style="display:none">
-
-<h3>Новий пост</h3>
-<textarea id="postText" placeholder="Що нового?"></textarea>
-<button onclick="createPost()">Опублікувати</button>
+<h3>Користувачі</h3>
+<div id="users"></div>
 
 <hr>
 
-<h3>Стрічка</h3>
-<div id="feed"></div>
+<h3 id="chatTitle">Чат</h3>
+<div id="messages"></div>
 
+<input id="messageInput" placeholder="Повідомлення">
+<button onclick="sendMessage()">Відправити</button>
+
+<br><br>
 <button onclick="logout()">Вийти</button>
 
 </div>

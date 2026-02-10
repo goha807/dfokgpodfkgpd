@@ -12,57 +12,52 @@ import {
 getFirestore,
 collection,
 addDoc,
+setDoc,
+doc,
+onSnapshot,
+getDocs,
 query,
-orderBy,
-onSnapshot
+orderBy
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 
-// 🔥 Firebase config
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyAaKLv0igSR4UUaROdQtnUxBdtYNF-PtXc",
   authDomain: "lusue-a77ab.firebaseapp.com",
-  projectId: "lusue-a77ab",
-  storageBucket: "lusue-a77ab.firebasestorage.app",
-  messagingSenderId: "49150290567",
-  appId: "1:49150290567:web:066682f27e1f158c752622"
+  projectId: "lusue-a77ab"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const db = getFirestore();
 
+let currentChatUser = null;
 
-// =====================
-// ✅ Реєстрація
-// =====================
+
+// =================
+// Реєстрація
+// =================
 window.register = async () => {
 
-try {
-
-await createUserWithEmailAndPassword(
+let user = await createUserWithEmailAndPassword(
 auth,
 regEmail.value,
 regPass.value
 );
 
-alert("Акаунт створено");
-
-} catch(e) {
-
-alert(e.message);
-
-}
+// записуємо користувача в базу
+await setDoc(doc(db,"users",user.user.uid),{
+email:user.user.email
+});
 
 };
 
 
-// =====================
-// ✅ Логін
-// =====================
+// =================
+// Логін
+// =================
 window.login = async () => {
-
-try {
 
 await signInWithEmailAndPassword(
 auth,
@@ -70,84 +65,135 @@ loginEmail.value,
 loginPass.value
 );
 
-} catch(e) {
-
-alert(e.message);
-
-}
-
 };
 
 
-// =====================
-// ✅ Вихід
-// =====================
+// =================
+// Вихід
+// =================
 window.logout = () => signOut(auth);
 
 
-// =====================
-// ✅ Перевірка входу
-// =====================
-onAuthStateChanged(auth, (user) => {
+// =================
+// Перевірка входу
+// =================
+onAuthStateChanged(auth,(user)=>{
 
-if (user) {
+if(user){
 
-authBox.style.display = "none";
-mainBox.style.display = "block";
+authBox.style.display="none";
+chatApp.style.display="block";
 
-loadPosts();
+loadUsers();
 
-} else {
+}else{
 
-authBox.style.display = "block";
-mainBox.style.display = "none";
+authBox.style.display="block";
+chatApp.style.display="none";
 
 }
 
 });
 
 
-// =====================
-// 📝 Створення поста
-// =====================
-window.createPost = async () => {
+// =================
+// Завантаження користувачів
+// =================
+async function loadUsers(){
 
-let user = auth.currentUser;
+let snap = await getDocs(collection(db,"users"));
 
-if (!postText.value) return;
+users.innerHTML="";
 
-await addDoc(collection(db, "posts"), {
-text: postText.value,
-user: user.email,
-time: Date.now()
+snap.forEach(u=>{
+
+let data = u.data();
+
+if(u.id !== auth.currentUser.uid){
+
+users.innerHTML += `
+<div class="user" onclick="openChat('${u.id}','${data.email}')">
+${data.email}
+</div>
+`;
+
+}
+
 });
 
-postText.value = "";
+}
+
+
+// =================
+// Відкрити чат
+// =================
+window.openChat = (uid,email)=>{
+
+currentChatUser = uid;
+
+chatTitle.innerText = "Чат з " + email;
+
+loadMessages();
 
 };
 
 
-// =====================
-// 📡 Завантаження постів
-// =====================
-function loadPosts() {
+// =================
+// Генерація ID чату
+// =================
+function chatId(){
 
-const q = query(collection(db, "posts"), orderBy("time", "desc"));
+let a = auth.currentUser.uid;
+let b = currentChatUser;
 
-onSnapshot(q, (snapshot) => {
+return [a,b].sort().join("_");
 
-feed.innerHTML = "";
+}
 
-snapshot.forEach(doc => {
 
-let post = doc.data();
+// =================
+// Відправка повідомлення
+// =================
+window.sendMessage = async ()=>{
 
-feed.innerHTML += `
-<div class="post">
-<b>${post.user}</b>
-<p>${post.text}</p>
-</div>
+if(!currentChatUser) return;
+
+await addDoc(collection(db,"messages"),{
+
+chat:chatId(),
+text:messageInput.value,
+sender:auth.currentUser.email,
+time:Date.now()
+
+});
+
+messageInput.value="";
+
+};
+
+
+// =================
+// Завантаження повідомлень
+// =================
+function loadMessages(){
+
+const q = query(collection(db,"messages"),orderBy("time"));
+
+onSnapshot(q,(snap)=>{
+
+messages.innerHTML="";
+
+snap.forEach(m=>{
+
+let msg = m.data();
+
+if(msg.chat === chatId()){
+
+messages.innerHTML += `
+<p><b>${msg.sender}:</b> ${msg.text}</p>
 `;
+
+}
 
 });
 

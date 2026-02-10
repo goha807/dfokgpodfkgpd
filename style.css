@@ -1,25 +1,33 @@
-body {
-font-family: Arial;
-max-width: 600px;
-margin: auto;
-background: #111;
-color: white;
+body{
+background:#111;
+color:white;
+font-family:Arial;
+max-width:600px;
+margin:auto;
 }
 
-input, textarea {
-width: 100%;
-padding: 10px;
-margin: 5px 0;
+input{
+width:100%;
+padding:10px;
+margin:5px 0;
 }
 
-button {
-padding: 10px;
-margin: 5px 0;
-cursor: pointer;
+button{
+padding:8px;
+margin:5px 0;
+cursor:pointer;
 }
 
-.post {
-border: 1px solid white;
-padding: 10px;
-margin: 10px 0;
+#messages{
+border:1px solid white;
+height:250px;
+overflow-y:auto;
+padding:5px;
+}
+
+.user{
+cursor:pointer;
+border:1px solid gray;
+padding:5px;
+margin:5px 0;
 }

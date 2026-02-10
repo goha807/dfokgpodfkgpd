@@ -1,0 +1,25 @@
+body {
+font-family: Arial;
+max-width: 600px;
+margin: auto;
+background: #111;
+color: white;
+}
+
+input, textarea {
+width: 100%;
+padding: 10px;
+margin: 5px 0;
+}
+
+button {
+padding: 10px;
+margin: 5px 0;
+cursor: pointer;
+}
+
+.post {
+border: 1px solid white;
+padding: 10px;
+margin: 10px 0;
+}

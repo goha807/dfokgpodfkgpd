@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Social</title>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<h1>Mini Social</h1>
+
+<!-- Авторизація -->
+<div id="authBox">
+
+<h3>Реєстрація</h3>
+<input id="regEmail" placeholder="Email">
+<input id="regPass" type="password" placeholder="Пароль">
+<button onclick="register()">Реєстрація</button>
+
+<h3>Вхід</h3>
+<input id="loginEmail" placeholder="Email">
+<input id="loginPass" type="password" placeholder="Пароль">
+<button onclick="login()">Увійти</button>
+
+</div>
+
+
+<!-- Основна соцмережа -->
+<div id="mainBox" style="display:none">
+
+<h3>Новий пост</h3>
+<textarea id="postText" placeholder="Що нового?"></textarea>
+<button onclick="createPost()">Опублікувати</button>
+
+<hr>
+
+<h3>Стрічка</h3>
+<div id="feed"></div>
+
+<button onclick="logout()">Вийти</button>
+
+</div>
+
+<script type="module" src="app.js"></script>
+
+</body>
+</html>
